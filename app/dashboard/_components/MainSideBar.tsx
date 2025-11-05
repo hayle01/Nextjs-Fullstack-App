@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { use } from 'react'
 import SiderBarRoutes from './SiderBarRoutes'
 import { getServerSession } from 'next-auth'
 import { AuthOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 import { User } from '@prisma/client'
+import UserAvatar from './UserAvatar'
 
 const MainSideBar = async () => {
     const session = await getServerSession(AuthOptions);
@@ -15,6 +16,10 @@ const MainSideBar = async () => {
         </div>
         <div className='flex flex-col w-full'>
             <SiderBarRoutes role={userRole} />
+        </div>
+        {/* user Avatar */}
+        <div className='absolute bottom-0 w-full p-6 border-t'>
+          <UserAvatar user={session?.user!} />
         </div>
     </div>
   )

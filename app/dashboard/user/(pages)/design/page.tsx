@@ -1,8 +1,13 @@
 import React from 'react'
+import Draw from './_components/Draw'
 
 const DesignCode = () => {
   return (
-    <div>DesignCode</div>
+    <div className='px-4'>
+      <main>
+        <Draw />
+      </main>
+    </div>
   )
 }
 
