@@ -11,8 +11,10 @@ import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoGithub } from "react-icons/io";
 import { BsFacebook } from "react-icons/bs";
-import { signIn } from "next-auth/react";
-const page = () => {
+import { signIn, useSession } from "next-auth/react";
+const LoginPage = () => {
+  const session = useSession();
+  console.log(session)
   return (
     <div className="flex h-screen justify-center items-center">
       <Card  className="w-[350px]">
@@ -34,4 +36,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default LoginPage;

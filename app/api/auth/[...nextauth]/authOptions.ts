@@ -20,5 +20,35 @@ export const AuthOptions: NextAuthOptions = {
             clientSecret : process.env.GOOGLE_CLIENT_SECRET as string
         }),
     ],
+   callbacks: {
+    jwt: async ({ token }) => {
+      const userInfo = await prisma.user.findUnique({
+        where: { email: token.email as string },
+      });
+
+      if (userInfo) {
+        userInfo.emailVerified = undefined!; 
+        token.user = userInfo!;
+       //token.user = {
+        //   id: userInfo.id,
+        //   name: userInfo.name,
+        //   email: userInfo.email,
+        //   image: userInfo.image,
+        //   role: userInfo.role,
+        //   credit: userInfo.credit,
+       // };
+      }
+
+      return token;
+    },
+
+    session: async({ session, token }) => {
+      if (token.user) session.user = token.user!;
+      return session;
+    },
+  },
+    session: {
+        strategy: "jwt"
+    },
     adapter: PrismaAdapter(prisma)
 }
