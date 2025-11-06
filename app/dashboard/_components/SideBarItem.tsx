@@ -11,9 +11,20 @@ interface iSideBarItemProps {
     isShare: boolean
 }
 const SideBarItem = ({id, icon: Icon, label, href, isShare}: iSideBarItemProps) => {
-    const pathname = usePathname();
+    const pathName = usePathname();
     const router = useRouter();
-    const isActive = pathname.includes(href);
+
+    const normalizedPathName = `/${pathName}`.replace('//', '/');
+    const normalizedHref = `/${href}`.replace('//', '/');
+
+    const pathSegments = pathName.split('/').filter(Boolean);
+    const hrefSegments = normalizedHref.split('/').filter(Boolean);
+
+    const isActiveBase = normalizedPathName.startsWith(normalizedHref);
+
+    const isExactOrParent = isActiveBase && pathSegments.length <= hrefSegments.length
+
+    const isActive = isActiveBase && isExactOrParent;
   return (
     <button onClick={() => router.push(`/${href}`)} className={cn("flex items-center gap-x-2 text-slate-500 font-[500] pl-6 transition-all hover:bg-slate-50 hover:text-slate-600 text-md", isActive && "text-slate-600 bg-slate-100")}>
         <div className='flex items-center gap-x-2 py-4'>

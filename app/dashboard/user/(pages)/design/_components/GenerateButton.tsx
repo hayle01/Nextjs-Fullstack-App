@@ -8,7 +8,8 @@ const GenerateButton = () => {
   return (
     <div>
       <Button
-        className={`z-[554] absolute top-4 left-[50%] bg-[#3080ed] hover:bg-[#3080ed]/70`}>
+      onClick={() => setLoading(!loading)}
+        className={`z-[554] bg-[#3080ed] hover:bg-[#3080ed]/70`}>
         {loading ? (
           <span className="flex space-x-2 justify-center items-center">
             Generating...
