@@ -2,7 +2,7 @@ import React from 'react'
 
 const UserPage = () => {
   return (
-    <div>User Page</div>
+    <div>User Page or overview page</div>
   )
 }
 
