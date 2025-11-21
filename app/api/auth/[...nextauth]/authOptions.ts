@@ -4,6 +4,9 @@ import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import FacebookProvider from "next-auth/providers/facebook";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+
 export const AuthOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -19,26 +22,47 @@ export const AuthOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_Client_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Invalid credentials");
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user || !user.password) {
+          throw new Error("Invalid credentials");
+        }
+
+        const isCorrectPassword = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isCorrectPassword) {
+          throw new Error("Invalid credentials");
+        }
+
+        if (!user.emailVerified) {
+          throw new Error("Email not verified");
+        }
+
+        return user;
+      },
+    }),
   ],
   callbacks: {
-    jwt: async ({ token }) => {
-      const userInfo = await prisma.user.findUnique({
-        where: { email: token.email as string },
-      });
-
-      if (userInfo) {
-        userInfo.emailVerified = undefined!;
-        token.user = userInfo!;
-        //token.user = {
-        //   id: userInfo.id,
-        //   name: userInfo.name,
-        //   email: userInfo.email,
-        //   image: userInfo.image,
-        //   role: userInfo.role,
-        //   credit: userInfo.credit,
-        // };
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.user = user;
       }
-
       return token;
     },
 
