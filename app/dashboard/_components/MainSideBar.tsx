@@ -8,7 +8,7 @@ import UserAvatar from './UserAvatar'
 const MainSideBar = async () => {
     const session = await getServerSession(AuthOptions);
     console.log(session)
-    const userRole = (session?.user as User).role;
+    const userRole = (session?.user as User)?.role;
   return (
     <div className='relative h-full border-r flex flex-col overflow-y-auto bg-white shadow-sm'>
         <div className='p-4'>

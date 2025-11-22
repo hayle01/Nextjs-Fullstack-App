@@ -10,7 +10,7 @@ import MobileMenu from './MobileMenu';
 
 const Navbar = async () => {
     const session = await getServerSession(AuthOptions);
-    const userCredit = (session?.user as User).credit;
+    const userCredit = (session?.user as User)?.credit;
   return (
     <div className='h-full p-4 border-b flex items-center justify-between bg-white shadow-sm'>
         <div className='flex justify-items-center items-center space-x-4'>

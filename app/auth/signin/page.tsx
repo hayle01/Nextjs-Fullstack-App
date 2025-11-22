@@ -42,15 +42,15 @@ export default function SignIn() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold">Sign In</h2>
+    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold">Login In</h2>
         <p className="text-gray-500 dark:text-gray-400 mt-2">
           Welcome back! Please sign in to continue.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Label htmlFor="email">Email address</Label>
           <Input
@@ -64,15 +64,10 @@ export default function SignIn() {
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
+          
             <Label htmlFor="password">Password</Label>
-            <Link
-              href="/auth/forgot-password"
-              className="text-sm font-medium text-blue-600 hover:text-blue-500"
-            >
-              Forgot password?
-            </Link>
-          </div>
+            
+          
           <Input
             id="password"
             type="password"
@@ -81,12 +76,32 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             className="mt-1"
           />
+          <Link
+              href="/auth/forgot-password"
+              className="flex justify-end mt-2 text-sm font-medium text-blue-600 hover:text-blue-500"
+            >
+              Forgot password?
+            </Link>
         </div>
-
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Signing in..." : "Sign in"}
-        </Button>
+       
+          <Button type="submit" size={"lg"} className="w-full" disabled={loading}>
+            {loading ? "Signing in..." : "Sign in"}
+          </Button>
+  
       </form>
+
+      
+      <div className="flex items-center gap-2 mt-6">
+        <div className="h-[1px] w-[33%] bg-border" /> <span className="text-sm text-gray-600 ">Or continue with</span> <div className="h-[1px] w-[33%] bg-border" />
+      </div>
+
+      <div className="grid w-full items-center gap-4 mt-6">
+        <div className="flex flex-col gap-2">
+          <Button onClick={() => signIn('google', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><FcGoogle className="w-6 h-6" /><span>Continue with Google</span></Button>
+          <Button onClick={() => signIn('github', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><IoLogoGithub className="w-6 h-6" /><span>Continue with Github</span></Button>
+
+        </div>
+      </div>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -98,14 +113,6 @@ export default function SignIn() {
             Sign up
           </Link>
         </p>
-      </div>
-
-      <div className="grid w-full items-center gap-4 pt-4">
-        <div className="flex flex-col space-y-2">
-          <Button onClick={() => signIn('google', { callbackUrl: '/' })} variant="outline" className="flex items-center p-4" ><FcGoogle className="w-6 h-6" /><span>Continue with Google</span></Button>
-          <Button onClick={() => signIn('github', { callbackUrl: '/' })} variant="outline" className="flex " ><IoLogoGithub className="w-6 h-6" /><span>Continue with Github</span></Button>
-
-        </div>
       </div>
     </div>
   );
