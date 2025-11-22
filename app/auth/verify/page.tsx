@@ -3,9 +3,14 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { toast } from "sonner";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa6";
 
 export default function VerifyEmail() {
   const router = useRouter();
@@ -47,29 +52,43 @@ export default function VerifyEmail() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+    <div className="max-w-md md:max-w-sm lg:max-w-[450px] mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
+      <div className="mb-2 flex items-center justify-center">
+        <Link
+          href="/auth/signin"
+          className="hover:text-gray-600 text-sm transition-all flex items-center gap-2">
+          <FaArrowLeft size={13} />
+          Back to Login
+        </Link>
+      </div>
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold">Verify your email</h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
-          We sent a code to {email}. Please enter it below.
+        <h2 className="text-3xl font-semibold tracking-tight">
+          Enter Verification Code
+        </h2>
+        <p className="text-gray-500 text-sm dark:text-gray-400 mt-2">
+          We&apos;ve sent a code to{" "}
+          <span className="font-semibold">{email}</span>.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <Label htmlFor="code">Verification Code</Label>
-          <Input
-            id="code"
-            type="text"
-            required
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="mt-1 text-center text-2xl tracking-widest"
+        <div className="flex justify-center">
+          <InputOTP
             maxLength={6}
-          />
+            value={code}
+            onChange={(value) => setCode(value)}>
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" size={"lg"} className="w-full" disabled={loading}>
           {loading ? "Verifying..." : "Verify Email"}
         </Button>
       </form>

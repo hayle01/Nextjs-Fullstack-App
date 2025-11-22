@@ -42,11 +42,11 @@ export default function SignIn() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
+    <div className="max-w-md md:max-w-sm lg:max-w-[450px] mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
       <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold">Login In</h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
-          Welcome back! Please sign in to continue.
+        <h2 className="text-3xl font-semibold tracking-tight"> Welcome back!</h2>
+        <p className="text-gray-500 text-sm dark:text-gray-400 mt-2">
+          Enter your credentials to sign in to your account
         </p>
       </div>
 
@@ -64,10 +64,15 @@ export default function SignIn() {
         </div>
 
         <div>
-          
+          <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
-            
-          
+            <Link
+              href="/auth/forgot-password"
+              className="text-sm font-medium text-blue-600 hover:text-blue-500"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <Input
             id="password"
             type="password"
@@ -76,12 +81,6 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             className="mt-1"
           />
-          <Link
-              href="/auth/forgot-password"
-              className="flex justify-end mt-2 text-sm font-medium text-blue-600 hover:text-blue-500"
-            >
-              Forgot password?
-            </Link>
         </div>
        
           <Button type="submit" size={"lg"} className="w-full" disabled={loading}>
@@ -97,15 +96,17 @@ export default function SignIn() {
 
       <div className="grid w-full items-center gap-4 mt-6">
         <div className="flex items-center gap-2">
-          <Button onClick={() => signIn('google', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><FcGoogle className="w-6 h-6" /><span>Google</span></Button>
-          <Button onClick={() => signIn('github', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><IoLogoGithub className="w-6 h-6" /><span>Github</span></Button>
+          <Button onClick={() => signIn('google', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" >
+            <FcGoogle className="w-12 h-12" /><span>Google</span>
+            </Button>
+          <Button onClick={() => signIn('github', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><IoLogoGithub /><span>Github</span></Button>
 
         </div>
       </div>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/auth/signup"
             className="font-medium text-blue-600 hover:text-blue-500"

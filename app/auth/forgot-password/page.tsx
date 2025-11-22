@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { FaArrowLeft } from "react-icons/fa6";
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -40,11 +41,22 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold">Forgot Password</h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
-          Enter your email address and we'll send you a code to reset your password.
+    <div className="max-w-md md:max-w-sm lg:max-w-[450px] mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
+      <div className="mb-2 flex items-center justify-center">
+        <Link
+          href="/auth/signin"
+          className="hover:text-gray-600 text-sm transition-all flex items-center gap-2">
+          <FaArrowLeft size={13} />
+          Back to Login
+        </Link>
+      </div>
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-semibold tracking-tight">
+          Forgot Password
+        </h2>
+        <p className="text-gray-500 text-sm dark:text-gray-400 mt-2">
+          Enter your email address and we&apos;ll send you a code to reset your
+          password.
         </p>
       </div>
 
@@ -61,19 +73,11 @@ export default function ForgotPassword() {
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" size={"lg"} className="w-full" disabled={loading}>
           {loading ? "Sending code..." : "Send Reset Code"}
         </Button>
       </form>
 
-      <div className="mt-6 text-center">
-        <Link
-          href="/auth/signin"
-          className="font-medium text-blue-600 hover:text-blue-500"
-        >
-          Back to Sign In
-        </Link>
-      </div>
     </div>
   );
 }

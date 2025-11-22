@@ -47,8 +47,8 @@ export default function SignUp() {
   return (
     <div className="bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold">Create an account</h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
+        <h2 className="text-3xl font-semibold tracking-tight">Create an account</h2>
+        <p className="text-gray-500 text-md dark:text-gray-400 mt-2">
           Get started with our platform today.
         </p>
       </div>

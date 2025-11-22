@@ -48,11 +48,11 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+    <div className="max-w-md md:max-w-sm lg:max-w-[450px] mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold">Reset Password</h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
-          Enter the code sent to {email} and your new password.
+        <h2 className="text-3xl font-semibold tracking-tight">Reset Password</h2>
+        <p className="text-gray-500 text-sm dark:text-gray-400 mt-2">
+          Enter the code sent to <span className="font-medium text-gray-600">{email}</span> and your new password.
         </p>
       </div>
 
