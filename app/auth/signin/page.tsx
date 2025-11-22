@@ -67,7 +67,7 @@ export default function SignIn() {
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
             <Link
-              href="/auth/forgot-password"
+              href="/auth/reset-password"
               className="text-sm font-medium text-blue-600 hover:text-blue-500"
             >
               Forgot password?

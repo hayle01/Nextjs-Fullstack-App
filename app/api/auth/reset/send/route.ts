@@ -1,37 +1,36 @@
 import { NextResponse } from "next/server";
-import prisma from "@/prisma/client";
-import { sendPasswordResetEmail } from "@/lib/email";
+import { PrismaClient } from "@prisma/client";
+import { sendPasswordResetEmail } from "@/lib/nodemailer";
+
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { email } = body;
+    const { email } = await req.json();
 
     if (!email) {
       return NextResponse.json(
-        { message: "Email is required" },
+        { error: "Email is required" },
         { status: 400 }
       );
     }
-
     const user = await prisma.user.findUnique({
       where: { email },
     });
 
     if (!user) {
-      // Don't reveal if user exists
       return NextResponse.json(
-        { message: "If an account exists, a reset email has been sent." },
+        { message: "If an account exists, a reset code has been sent." },
         { status: 200 }
       );
     }
 
     const token = Math.floor(100000 + Math.random() * 900000).toString();
-    const expires = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
+    const expires = new Date(Date.now() + 3600000); // 1 hour
 
-    await prisma.verificationToken.create({
+    await prisma.passwordResetToken.create({
       data: {
-        identifier: email,
+        email,
         token,
         expires,
       },
@@ -40,13 +39,13 @@ export async function POST(req: Request) {
     await sendPasswordResetEmail(email, token);
 
     return NextResponse.json(
-      { message: "If an account exists, a reset email has been sent." },
+      { message: "Reset code sent successfully" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Forgot password error:", error);
+    console.error("Password reset error:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { error: "Something went wrong" },
       { status: 500 }
     );
   }

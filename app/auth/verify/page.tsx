@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa6";
+import { Loader2 } from "lucide-react";
 
 export default function VerifyEmail() {
   const router = useRouter();
@@ -90,6 +91,7 @@ export default function VerifyEmail() {
 
         <Button type="submit" size={"lg"} className="w-full" disabled={loading}>
           {loading ? "Verifying..." : "Verify Email"}
+          {/* {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />} */}
         </Button>
       </form>
     </div>

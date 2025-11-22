@@ -81,3 +81,13 @@ model Authenticator {
  
   @@unique([userId, credentialID])
 }
+
+model PasswordResetToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  token     String
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}

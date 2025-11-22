@@ -1,35 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { FaArrowLeft } from "react-icons/fa6";
 
-export default function ResetPassword() {
+export default function ResetPasswordPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email");
-  const [code, setCode] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!email) {
-      router.push("/auth/forgot-password");
-    }
-  }, [email, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/reset-password", {
+      const res = await fetch("/api/auth/reset/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code, password }),
+        body: JSON.stringify({ email }),
       });
 
       const data = await res.json();
@@ -38,8 +31,8 @@ export default function ResetPassword() {
         throw new Error(data.message || "Something went wrong");
       }
 
-      toast.success("Password reset successfully!");
-      router.push("/auth/signin");
+      toast.success("If an account exists, a reset code has been sent.");
+      router.push(`/auth/reset-password/verify?email=${encodeURIComponent(email)}`);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -49,41 +42,38 @@ export default function ResetPassword() {
 
   return (
     <div className="max-w-md md:max-w-sm lg:max-w-[450px] mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-semibold tracking-tight">Reset Password</h2>
+      <div className="mb-2 flex items-center justify-center">
+        <Link
+          href="/auth/signin"
+          className="hover:text-gray-600 text-sm transition-all flex items-center gap-2">
+          <FaArrowLeft size={13} />
+          Back to Login
+        </Link>
+      </div>
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-semibold tracking-tight">
+          Reset Password
+        </h2>
         <p className="text-gray-500 text-sm dark:text-gray-400 mt-2">
-          Enter the code sent to <span className="font-medium text-gray-600">{email}</span> and your new password.
+          Enter your email address and we'll send you a code to reset your password.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <Label htmlFor="code">Verification Code</Label>
+          <Label htmlFor="email">Email address</Label>
           <Input
-            id="code"
-            type="text"
+            id="email"
+            type="email"
             required
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="mt-1 text-center text-2xl tracking-widest"
-            maxLength={6}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="password">New Password</Label>
-          <Input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="mt-1"
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Resetting password..." : "Reset Password"}
+        <Button type="submit" size={"lg"} className="w-full" disabled={loading}>
+          {loading ? "Sending code..." : "Send Reset Code"}
         </Button>
       </form>
     </div>
