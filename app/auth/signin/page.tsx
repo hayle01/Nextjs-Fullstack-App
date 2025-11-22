@@ -96,9 +96,9 @@ export default function SignIn() {
       </div>
 
       <div className="grid w-full items-center gap-4 mt-6">
-        <div className="flex flex-col gap-2">
-          <Button onClick={() => signIn('google', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><FcGoogle className="w-6 h-6" /><span>Continue with Google</span></Button>
-          <Button onClick={() => signIn('github', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><IoLogoGithub className="w-6 h-6" /><span>Continue with Github</span></Button>
+        <div className="flex items-center gap-2">
+          <Button onClick={() => signIn('google', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><FcGoogle className="w-6 h-6" /><span>Google</span></Button>
+          <Button onClick={() => signIn('github', { callbackUrl: '/' })} size={"lg"} variant="outline" className="flex items-center w-full" ><IoLogoGithub className="w-6 h-6" /><span>Github</span></Button>
 
         </div>
       </div>
