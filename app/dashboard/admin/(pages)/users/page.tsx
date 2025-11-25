@@ -2,7 +2,7 @@ import React from 'react'
 
 const UserPage = () => {
   return (
-    <div>Users Page</div>
+    <div className="w-full p-6 lg:p-8">Users Page</div>
   )
 }
 
