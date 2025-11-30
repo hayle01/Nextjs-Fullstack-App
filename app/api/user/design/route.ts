@@ -13,6 +13,6 @@ export const POST = async (request: NextRequest) => {
     if(!session || !session.user){
         return NextResponse.json("unauthorized access please login", {status: 403});
     }
-    // TODO: CREATE POST 
+    // TODO: CREATE OPENAI CODE GENERATION POST 
     
 }
