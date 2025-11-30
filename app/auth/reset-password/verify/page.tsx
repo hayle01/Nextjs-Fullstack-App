@@ -12,9 +12,19 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
+const RESEND_COOLDOWN_SECONDS = 120;
+const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    const paddedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+    return `${minutes}:${paddedSeconds}`;
+};
+
 export default function VerifyResetCodePage() {
     const [code, setCode] = useState("");
     const [loading, setLoading] = useState(false);
+    const [resendLoading, setResendLoading] = useState(false);
+    const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
     
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -26,6 +36,16 @@ export default function VerifyResetCodePage() {
             router.push("/auth/reset-password"); 
         }
     }, [email, router]);
+    
+    useEffect(() => {
+        if (cooldown > 0) {
+          const timer = setTimeout(() => {
+            setCooldown((prev) => prev - 1);
+          }, 1000);
+          return () => clearTimeout(timer);
+        }
+    }, [cooldown]);
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,6 +80,35 @@ export default function VerifyResetCodePage() {
             setLoading(false);
         }
     };
+
+    const handleResend = async () => {
+        if (cooldown > 0 || resendLoading) return;
+
+        setResendLoading(true);
+
+        try {
+            const res = await fetch("/api/auth/reset/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to resend code.");
+            }
+
+            toast.success("If an account exists, a new reset code has been sent."); 
+            setCooldown(RESEND_COOLDOWN_SECONDS);
+            
+        } catch (error: any) {
+            toast.error(error.message);
+        } finally {
+            setResendLoading(false);
+        }
+    };
+
 
     return (
         <div className="max-w-md md:max-w-sm lg:max-w-[450px] mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg border border-border">
@@ -97,6 +146,25 @@ export default function VerifyResetCodePage() {
                             </InputOTPGroup>
                         </InputOTP>
                     </div>
+
+                    <div className="text-center">
+                        <Button
+                            onClick={handleResend}
+                            variant="link"
+                            type="button"
+                            className="text-sm font-medium p-0 h-auto"
+                            disabled={resendLoading || cooldown > 0}
+                        >
+                            {resendLoading 
+                                ? "Sending new code..."
+                                : cooldown > 0 
+                                ? `Resend Code in ${formatTime(cooldown)}` 
+                                : "Resend Code"
+                            }
+                        </Button>
+                    </div>
+                   
+                    
                     <div>
                         <Button
                             type="submit"
