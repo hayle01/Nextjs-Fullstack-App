@@ -11,7 +11,16 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa6";
-import { Loader2 } from "lucide-react";
+
+
+const RESEND_COOLDOWN_SECONDS = 120;
+
+const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    const paddedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+    return `${minutes}:${paddedSeconds}`;
+};
 
 export default function VerifyEmail() {
   const router = useRouter();
@@ -19,12 +28,24 @@ export default function VerifyEmail() {
   const email = searchParams.get("email");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
 
   useEffect(() => {
     if (!email) {
       router.push("/auth/signin");
     }
   }, [email, router]);
+
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => {
+        setCooldown((prev) => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +70,35 @@ export default function VerifyEmail() {
       toast.error(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (cooldown > 0 || resendLoading) return;
+
+    setResendLoading(true);
+
+    try {
+        const res = await fetch("/api/auth/resend-verification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message || "Failed to resend code.");
+        }
+
+        toast.success(data.message);
+        setCooldown(RESEND_COOLDOWN_SECONDS);
+        setCode(""); 
+        
+    } catch (error: any) {
+        toast.error(error.message);
+    } finally {
+        setResendLoading(false);
     }
   };
 
@@ -88,10 +138,26 @@ export default function VerifyEmail() {
             </InputOTPGroup>
           </InputOTP>
         </div>
+        
+        <div className="text-center">
+            <Button
+              onClick={handleResend}
+              variant="link"
+              type="button"
+              className="text-sm font-medium p-0 h-auto"
+              disabled={resendLoading || cooldown > 0}
+            >
+              {resendLoading 
+                ? "Sending new code..."
+                : cooldown > 0 
+                  ? `Resend Code in ${formatTime(cooldown)}`
+                  : "Resend Code"
+              }
+            </Button>
+        </div>
 
-        <Button type="submit" size={"lg"} className="w-full" disabled={loading}>
+        <Button type="submit" size={"lg"} className="w-full" disabled={loading || code.length !== 6}>
           {loading ? "Verifying..." : "Verify Email"}
-          {/* {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />} */}
         </Button>
       </form>
     </div>

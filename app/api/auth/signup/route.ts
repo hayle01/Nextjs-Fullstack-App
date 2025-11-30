@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 import bcrypt from "bcrypt";
-import { sendVerificationEmail } from "@/lib/email";
+import { sendVerificationEmail } from "@/lib/nodemailer";
 
 export async function POST(req: Request) {
   try {
@@ -37,17 +37,19 @@ export async function POST(req: Request) {
     });
 
     const token = Math.floor(100000 + Math.random() * 900000).toString();
-    const expires = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
+    const expires = new Date(Date.now() + 1000 * 60 * 60); 
 
-    await prisma.verificationToken.create({
+    prisma.verificationToken.create({
       data: {
         identifier: email,
         token,
         expires,
       },
+    })
+    .then(() => sendVerificationEmail(email, token))
+    .catch((error) => {
+      console.error("Async Email/Token creation failed, but user was created:", error);
     });
-
-    await sendVerificationEmail(email, token);
 
     return NextResponse.json(
       { message: "User created successfully" },

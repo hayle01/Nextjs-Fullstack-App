@@ -34,17 +34,18 @@ export async function POST(req: Request) {
       );
     }
 
-    await prisma.user.update({
-      where: { email },
-      data: {
-        emailVerified: new Date(),
-      },
-    });
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { email },
+        data: {
+          emailVerified: new Date(),
+        },
+      }),
 
-    await prisma.verificationToken.delete({
-      where: { id: verificationToken.id },
-    });
-
+      prisma.verificationToken.delete({
+        where: { id: verificationToken.id },
+      }),
+    ]);
     return NextResponse.json(
       { message: "Email verified successfully" },
       { status: 200 }
