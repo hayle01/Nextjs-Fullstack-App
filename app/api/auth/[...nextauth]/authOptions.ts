@@ -59,25 +59,47 @@ export const AuthOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-        // Tani waxay xaqiijinaysaa in goobta password-ka aan lagu dhex keydin token-ka
-        async jwt({ token, user, account }) {
-            
-            // Xaaladda 1: User-ku hadda ayuu galay (user object wuu jiraa)
-            if (user) {
+        async signIn({ user, account, profile }) {
+            if (account?.type !== 'credentials' && user.email) {
                 
-                // Soo qaad user-ka DB-ga oo dhan si loo hubiyo role-ka, xitaa haddii uu yahay OAuth
-                // Hubi in user.email uu jiro
+                const existingUser = await prisma.user.findUnique({
+                    where: { email: user.email },
+                    select: { emailVerified: true }
+                });
+                const isGoogleVerified = (profile as any)?.email_verified === true; 
+
+                if (existingUser?.emailVerified === null && isGoogleVerified) {
+                     await prisma.user.update({
+                        where: { email: user.email },
+                        data: { emailVerified: new Date() },
+                     });
+                     
+                }
+            }
+            
+            return true;
+        },
+
+
+        async jwt({ token, user, account }) {
+            if (user) {
                 if (user.email) {
                     const existingUser = await prisma.user.findUnique({
                         where: { email: user.email as string },
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            emailVerified: true,
+                            image: true,
+                            role: true,
+                            credit: true,
+                            createdAt: true,
+                            updatedAt: true,
+                        },
                     });
 
-                    // Nadiifi Token-ka: Ku dar kaliya xogta muhiimka ah
-                    token.id = existingUser?.id;
-                    token.role = existingUser?.role || "user"; // Soo qaado role-ka DB-ga
-                    
-                    // Hubi in email Verified uu sidoo kale ku jiro Token-ka (Muhiim)
-                    token.emailVerified = existingUser?.emailVerified;
+                    token.user = existingUser; 
                 }
             }
             
@@ -85,19 +107,10 @@ export const AuthOptions: NextAuthOptions = {
         },
 
         async session({ session, token }) {
-            // Ku dar goobaha token-ka ee session-ka
-            if (token.id) {
-                session?.user?.id = token.id as string;
-            }
-            if (token.role) {
-                session?.user?.role = token.role as string;
-            }
-            // Hubi in emailVerified uu sidoo kale ku jiro Session-ka
-            if (token.emailVerified) {
-                session.user.emailVerified = token.emailVerified as Date;
+            if (token.user) {
+                session.user = token.user as any; 
             }
             
-            // Tani waxay hubinaysaa in session.user aysan noqon mid buuxa oo leh password iyo waxyaabo kale
             return session;
         },
     },
