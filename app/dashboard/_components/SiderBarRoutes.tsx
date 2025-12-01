@@ -1,5 +1,5 @@
 "use client"
-import { BookCheck, Group, ViewIcon } from 'lucide-react';
+import { BookCheck, FolderInput, Group, ViewIcon } from 'lucide-react';
 import SideBarItem from './SideBarItem';
 const adminRoutes = [
       {
@@ -44,6 +44,13 @@ const userRoutes = [
         icon: BookCheck,
         label: "List",
         href: "dashboard/user",
+        isShare: true
+    },
+    {
+        id: 2,
+        icon: FolderInput,
+        label: "Projects",
+        href: "dashboard/user/projects",
         isShare: true
     }
    
