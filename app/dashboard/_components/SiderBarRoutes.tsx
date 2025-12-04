@@ -1,7 +1,7 @@
 "use client"
 import { BookCheck, FolderInput, Group, ViewIcon } from 'lucide-react';
 import SideBarItem from './SideBarItem';
-const adminRoutes = [
+export const adminRoutes = [
       {
         id: 1,
         icon: ViewIcon,
@@ -31,7 +31,7 @@ const adminRoutes = [
         isShare: false,
     }
 ]
-const userRoutes = [
+export const userRoutes = [
     {
         id: 1,
         icon: ViewIcon,
