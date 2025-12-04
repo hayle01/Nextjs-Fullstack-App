@@ -18,11 +18,11 @@ export default function RoleSelect({
 
   const updateRoleMutation = useMutation({
     mutationFn: async (role: UserRoles) =>
-      axios.patch(`${API}/admin/users/${id}/role`, { role }),
-    onSuccess: () => {
-      toast.success("Role updated");
-      router.refresh();
-    },
+      axios.put(`${API}/admin/users/${id}`, { role }),
+   onSuccess: (_, role) => {
+    toast.success(`Updated role to ${role}`);
+    router.refresh();
+  },
     onError: () => toast.error("Failed to update role"),
   });
 
