@@ -3,11 +3,10 @@ import SiderBarRoutes from './SiderBarRoutes'
 import { getServerSession } from 'next-auth'
 import { AuthOptions } from '@/app/api/auth/[...nextauth]/authOptions'
 import { User } from '@prisma/client'
-import UserAvatar from './UserAvatar'
+import UserAvatarDropdown from './UserAvatarDropdown';
 
 const MainSideBar = async () => {
     const session = await getServerSession(AuthOptions);
-    console.log(session)
     const userRole = (session?.user as User)?.role;
   return (
     <div className='relative h-full border-r flex flex-col overflow-y-auto bg-white shadow-sm'>
@@ -16,10 +15,6 @@ const MainSideBar = async () => {
         </div>
         <div className='flex flex-col w-full'>
             <SiderBarRoutes role={userRole} />
-        </div>
-        {/* user Avatar */}
-        <div className='absolute bottom-0 w-full p-6 border-t'>
-          <UserAvatar user={session?.user!} />
         </div>
     </div>
   )

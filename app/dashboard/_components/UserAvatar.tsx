@@ -3,6 +3,7 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Lock } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { IoIosLogOut } from "react-icons/io";
 
 export interface UserProps {
     id?: string;
@@ -23,7 +24,7 @@ const UserAvatar = ({user}: {user: UserProps}) => {
         <span className="text-base text-slate-600 font-[500]">{user?.name!}</span>
       </div>
 
-      <Lock onClick={() => signOut()}  className="text-slate-700 cursor-pointer" />
+      <IoIosLogOut  onClick={() => signOut()}  className="h-6 w-6 text-slate-700 cursor-pointer" />
     </div>
   );
 };

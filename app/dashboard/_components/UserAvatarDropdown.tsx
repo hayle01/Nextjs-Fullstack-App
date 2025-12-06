@@ -10,6 +10,8 @@ import {
 import { UserProps } from "./UserAvatar";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { IoIosLogOut } from "react-icons/io";
+import { LucideUserRoundCog } from "lucide-react";
 
 interface Props {
   user: UserProps;
@@ -32,10 +34,12 @@ const UserAvatarDropdown: React.FC<Props> = ({ user }) => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-48" align="end">
-        <DropdownMenuItem onClick={() => handleNavigate("/profile")}>
-          Profile
+        <DropdownMenuItem className="px-4 py-2" onClick={() => handleNavigate("/profile")}>
+          <LucideUserRoundCog className="mr-2 h-4 w-4" /> Profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+        <DropdownMenuItem className="px-4 py-2" onClick={() => signOut()}>
+          <IoIosLogOut className="mr-2 h-4 w-4" /> Sign Out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
     </div>

@@ -1,18 +1,18 @@
-import React from 'react'
-import UserAvatar from './UserAvatar'
-import { getServerSession } from 'next-auth'
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import UserAvatar from "./UserAvatar";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { HiOutlineCreditCard } from "react-icons/hi2";
-import { AuthOptions } from '@/app/api/auth/[...nextauth]/authOptions';
-import { User } from '@prisma/client';
-import MobileMenu from './MobileMenu';
-import UserAvatarDropdown from './UserAvatarDropdown';
+import { AuthOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import { User } from "@prisma/client";
+import MobileMenu from "./MobileMenu";
+import UserAvatarDropdown from "./UserAvatarDropdown";
 
 const Navbar = async () => {
-    const session = await getServerSession(AuthOptions);
+  const session = await getServerSession(AuthOptions);
   const user = session?.user as User | undefined;
-    const userCredit = (session?.user as User)?.credit;
+  const userCredit = (session?.user as User)?.credit;
 
   return (
     <div className="h-full p-4 border-b flex items-center justify-between bg-white shadow-sm">
@@ -32,8 +32,8 @@ const Navbar = async () => {
       </div>
 
       <div className="hidden md:flex">
-  {user && <UserAvatarDropdown user={user} />}
-</div>
+        {user && <UserAvatarDropdown user={user} />}
+      </div>
 
       {/* Mobile Menu */}
       <div className="md:hidden">
@@ -41,6 +41,5 @@ const Navbar = async () => {
       </div>
     </div>
   );
-
-}
-export default Navbar
+};
+export default Navbar;
