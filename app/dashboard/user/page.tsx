@@ -8,7 +8,7 @@ const UserPage = async () => {
   const userRole = (session?.user as User)?.role;
   console.log('User Role:', userRole);
   return (
-    <div>User Page or overview page</div>
+    <div>User or overview page</div>
   )
 }
 
